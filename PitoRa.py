@@ -6,8 +6,6 @@ import socket
 from PIL import Image, ImageFile
 from io import BytesIO
 
-ImageFile.LOAD_TRUNCATED_IMAGES = True
-
 sock = socket.socket()
 
 sock.bind(('127.0.0.1', 9090))
@@ -20,16 +18,17 @@ conn, addr = sock.accept()
 
 print(f"Connection established with {addr}")
 
+inp = input('Write here: ')
+conn.send(b'screen')
+
 while True:
-    data = conn.recv(4096)
+    data = conn.recv(99999999)
     if data:
-        img = Image.open(BytesIO(data))
-        #img = Image.open(BytesIO(data))
-        #img = data.decode('utf-8')
-        #img = eval(img)
-        img.show()
+        image = Image.open(BytesIO(data))
+        image.show()
     if not data:
         break
     conn.send(b'success')
 
+sock.close()
 
